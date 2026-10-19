@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بطاقة VIP — <?php echo e($card->membership_number); ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="<?php echo e(asset('css/app.css')); ?>" rel="stylesheet">
+</head>
+<body>
+    <div class="public-card-page">
+        <div class="public-card-container">
+            <div class="text-center mb-4">
+                <i class="bi bi-shield-check text-warning" style="font-size: 2.5rem;"></i>
+                <h4 class="text-white mt-2"><?php echo e(config('vip.company_name')); ?></h4>
+                <p class="text-white-50">التحقق من بطاقة العضوية</p>
+            </div>
+
+            <div class="vip-panel p-4">
+                <div class="text-center mb-4">
+                    <span class="badge <?php echo e($status->badgeClass()); ?> fs-5 px-4 py-2">
+                        <i class="bi bi-<?php echo e($status->value === 'active' ? 'check-circle' : ($status->value === 'expired' ? 'clock' : 'x-circle')); ?>"></i>
+                        <?php echo e($status->label()); ?>
+
+                    </span>
+                </div>
+
+                <table class="table">
+                    <tr>
+                        <th class="text-muted" width="40%">اسم العميل</th>
+                        <td><strong><?php echo e($card->customer->name); ?></strong></td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">نوع البطاقة</th>
+                        <td>
+                            <span class="badge <?php echo e($card->card_type->value === 'gold' ? 'bg-warning text-dark' : 'bg-secondary'); ?>">
+                                <?php echo e($card->card_type->labelAr()); ?>
+
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">رقم العضوية</th>
+                        <td><code><?php echo e($card->membership_number); ?></code></td>
+                    </tr>
+                    <tr>
+                        <th class="text-muted">تاريخ الانتهاء</th>
+                        <td><?php echo e($card->expires_at->format('d/m/Y')); ?></td>
+                    </tr>
+                </table>
+
+                <h6 class="mt-4 mb-3"><i class="bi bi-star"></i> المزايا المتاحة</h6>
+                <ul class="list-group list-group-flush">
+                    <?php $__currentLoopData = $card->benefits(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $benefit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li class="list-group-item d-flex align-items-center gap-2">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <?php echo e($benefit); ?>
+
+                    </li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </ul>
+            </div>
+
+<?php if($card->usages && $card->usages->count() > 0): ?>
+<div class="vip-panel p-4 mt-3">
+    <h6 class="mb-3"><i class="bi bi-clock-history text-warning"></i> سجل الاستخدامات</h6>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>الخدمة</th>
+                <th>التاريخ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $__currentLoopData = $card->usages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $usage): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <tr>
+                <td><span class="badge bg-warning text-dark"><?php echo e($usage->service_type); ?></span></td>
+                <td><?php echo e($usage->used_at->format('d/m/Y')); ?></td>
+            </tr>
+            <?php if($usage->notes): ?>
+            <tr>
+                <td colspan="2" class="text-muted small ps-3">
+                    <i class="bi bi-chat-left-text"></i> <?php echo e($usage->notes); ?>
+
+                </td>
+            </tr>
+            <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </tbody>
+    </table>
+</div>
+<?php endif; ?>
+            <p class="text-center text-white-50 mt-4 small">
+                © <?php echo e(date('Y')); ?> <?php echo e(config('vip.company_name')); ?> — جميع الحقوق محفوظة
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+<?php /**PATH C:\Users\mass\Desktop\vip-insurance-system\resources\views/public/card.blade.php ENDPATH**/ ?>
